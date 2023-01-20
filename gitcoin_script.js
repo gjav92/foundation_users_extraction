@@ -1,9 +1,9 @@
 //Run this script on the browser console
 
-var total=[]
-async function get(page){
-  console.log("Current page",page)
-  var result=await fetch("https://gitcoin.co/api/v0.1/users_fetch/?page="+page, {
+var total = []
+async function get(page) {
+  console.log("Current page", page)
+  var result = await fetch("https://gitcoin.co/api/v0.1/users_fetch/?page=" + page, {
     "credentials": "include",
     "headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0",
@@ -12,34 +12,34 @@ async function get(page){
         "Upgrade-Insecure-Requests": "1",
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "same-origin"
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1"
     },
-    "referrer": "https://gitcoin.co/api/v0.1/users_fetch/",
     "method": "GET",
     "mode": "cors"
   });
-  try{
-	  var r=await result.json()
-  	console.log(r)
-  }
-  catch(e){
-     console.log(total)
-  	window.location.href="https://gitcoin.co/api/v0.1/users_fetch/?page="+page
-  }
-
-
-  var users=r.data
-  console.log(users)
-  total=[...total,...users]
-  if(users.length!==0){
-//   if(page<30){
-  	get(page+1)
-  }
-  else{
+  try {
+    var r = await result.json()
+    console.log(r)
+    var users = r.data
+    console.log(users)
+    total = [...total, ...users]
+    if (users.length !== 0) {
+      //   if(page<30){
+      get(page + 1)
+    } else {
+      console.log(total)
+    	window.location.href = "https://gitcoin.co/api/v0.1/users_fetch/?page=" + page
+    }
+  } catch (e) {
     console.log(total)
+    window.location.href = "https://gitcoin.co/api/v0.1/users_fetch/?page=" + page
   }
+
+
+
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const p = urlParams.get('page') | 1
-get(p)
+var params = new URLSearchParams(window.location.search);
+var px = params.get('page') | 1
+get(px)
