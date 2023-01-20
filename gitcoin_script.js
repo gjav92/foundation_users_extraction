@@ -1,5 +1,9 @@
 //Run this script on the browser console
 
+
+var startPage=1
+var stopPage=0
+
 var total = []
 async function get(page) {
   console.log("Current page", page)
@@ -24,22 +28,23 @@ async function get(page) {
     var users = r.data
     console.log(users)
     total = [...total, ...users]
-    if (users.length !== 0) {
-      //   if(page<30){
-      get(page + 1)
-    } else {
+    if((stopPage==0 && users.length !== 0) || (stopPage!==0 && page<=stopPage)){
+       get(page + 1)
+    }
+
+		 else {
       console.log(total)
     	window.location.href = "https://gitcoin.co/api/v0.1/users_fetch/?page=" + page
     }
   } catch (e) {
+    console.log("Captcha required")
     console.log(total)
     window.location.href = "https://gitcoin.co/api/v0.1/users_fetch/?page=" + page
   }
-
-
-
+  
 }
 
+
 var params = new URLSearchParams(window.location.search);
-var px = params.get('page') | 1
+var px = params.get('page') | startPage
 get(px)
