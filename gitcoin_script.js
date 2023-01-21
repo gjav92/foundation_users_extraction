@@ -2,7 +2,32 @@
 
 
 var startPage=1
-var stopPage=0
+var stopPage=0;
+
+
+
+(function(console) {
+    console.save = function(data, filename){
+        if(!data) {
+            console.error('Console.save: No data')
+            return;
+        }
+        if(!filename) filename = 'console.html'
+        if(typeof data === "object"){
+            data = JSON.stringify(data, undefined, 4)
+        }
+        var blob = new Blob([data], {type: 'text/json'}),
+            e    = document.createEvent('MouseEvents'),
+            a    = document.createElement('a')
+
+        a.download = filename
+        a.href = window.URL.createObjectURL(blob)
+        a.dataset.downloadurl =  ['text/json', a.download, a.href].join(':')
+        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+        a.dispatchEvent(e)
+    }
+})(console)
+
 
 var total = []
 async function get(page) {
@@ -27,6 +52,9 @@ async function get(page) {
     console.log(r)
     var users = r.data
     console.log(users)
+
+console.save(users,"page-"+page+".json")
+    
     total = [...total, ...users]
     if((stopPage==0 && users.length !== 0) || (stopPage!==0 && page<=stopPage)){
        get(page + 1)
